@@ -1,5 +1,5 @@
 use async_std::prelude::*;
-use serde::de::{DeserializeOwned, DeserializedOwned};
+use serde::de::{DeserializeOwned};
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::marker::Unpin;
@@ -13,13 +13,12 @@ where
     P: Serialize, 
 {
     let mut json = serde_json::to_string(&packet)?;
-
     leaving.write_all(json.as_bytes()).await?;
 
     Ok(())
 }
 
-pub async fn recieve<I,T>(incoming: &mut I) -> impl Stream<Item = ChatResult<T>>
+pub async fn recieve<I,T>(incoming: I) -> impl Stream<Item = ChatResult<T>>
 where
     I: async_std::io::BufRead + Unpin,
     T: DeserializeOwned,
